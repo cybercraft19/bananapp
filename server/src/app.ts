@@ -3,16 +3,18 @@ import express from "express";
 import helmet from "helmet";
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { z } from "zod";
 import { env } from "./config/env.js";
 
+const AQUI = path.dirname(fileURLToPath(import.meta.url)); // server/src o server/dist
 export const app = express();
 app.use(helmet());
 app.use(cors({ origin: env.CLIENT_ORIGIN }));
 app.use(express.json({ limit: "256kb" }));
 
 // Almacén simple en archivo JSON (reemplazable por PostgreSQL/PostGIS en la Fase 1).
-const ARCHIVO = process.env.DATA_FILE ?? path.resolve(process.cwd(), "data", "registros.json");
+const ARCHIVO = process.env.DATA_FILE ?? path.resolve(AQUI, "..", "data", "registros.json");
 const registroSchema = z.object({
   id: z.string().uuid(),
   tipo: z.enum(["actividad", "plaga"]),
@@ -84,7 +86,7 @@ app.get("/api/clima", async (req, res) => {
 });
 
 // En producción el mismo servidor entrega la web compilada (client/dist).
-const DIST = process.env.CLIENT_DIST ?? path.resolve(process.cwd(), "..", "client", "dist");
+const DIST = process.env.CLIENT_DIST ?? path.resolve(AQUI, "..", "..", "client", "dist");
 if (fs.existsSync(path.join(DIST, "index.html"))) {
   app.use(express.static(DIST));
   app.get(/^\/(?!api\/).*/, (_req, res) => { res.sendFile(path.join(DIST, "index.html")); });
