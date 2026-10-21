@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgis/postgis:16-3.4
+    container_name: bananapp-postgis
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-bananapp}
+      POSTGRES_USER: ${POSTGRES_USER:-bananapp}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-bananapp_dev_only}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - bananapp-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-bananapp} -d ${POSTGRES_DB:-bananapp}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  bananapp-postgres-data:
