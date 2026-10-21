@@ -83,6 +83,13 @@ app.get("/api/clima", async (req, res) => {
   }
 });
 
+// En producción el mismo servidor entrega la web compilada (client/dist).
+const DIST = process.env.CLIENT_DIST ?? path.resolve(process.cwd(), "..", "client", "dist");
+if (fs.existsSync(path.join(DIST, "index.html"))) {
+  app.use(express.static(DIST));
+  app.get(/^\/(?!api\/).*/, (_req, res) => { res.sendFile(path.join(DIST, "index.html")); });
+}
+
 app.use((_req, res) => {
   res.status(404).json({ error: { codigo: "NO_ENCONTRADO", mensaje: "Ruta no encontrada", detalles: [] } });
 });
