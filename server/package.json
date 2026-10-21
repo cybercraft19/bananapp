@@ -9,7 +9,7 @@
     "start": "node dist/server.js",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint": "eslint src --ext .ts",
-    "test": "vitest run"
+    "test": "DATA_FILE=/tmp/bananapp-test.json vitest run"
   },
   "dependencies": {
     "cors": "^2.8.5",

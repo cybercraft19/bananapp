@@ -24,6 +24,6 @@ Los comandos `npm run typecheck`, `npm run lint`, `npm test` y `npm run build` e
 
 ## Estado por fases
 
-La implementación actual corresponde a la Fase 0: estructura del monorepo, configuración, servidor mínimo, cliente PWA mínimo y servicio PostGIS. Las migraciones, autenticación, sincronización y flujos de campo se incorporarán en las fases siguientes.
+Estado actual: cliente PWA funcional (registro de actividades y plagas con GPS, mapa, reporte semanal CSV, clima) con cola offline en IndexedDB y sincronización idempotente (`POST /api/sync`). El servidor guarda en `server/data/registros.json`; PostgreSQL/PostGIS, autenticación y Leaflet quedan para la siguiente fase.
 
 Consulta [GUIA.md](./GUIA.md) para el flujo de desarrollo y [docs/DECISIONES.md](./docs/DECISIONES.md) para las decisiones tomadas.
