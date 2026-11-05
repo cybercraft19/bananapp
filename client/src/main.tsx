@@ -44,7 +44,7 @@ async function sincronizar() {
   }
 }
 
-function App({ onSalir }: { onSalir: () => void }) {
+function App({ onSalir, responsable }: { onSalir: () => void; responsable: string }) {
   const [tab, setTab] = useState<"registrar" | "mapa" | "reporte">("registrar");
   const [online, setOnline] = useState(navigator.onLine);
   const [registros, setRegistros] = useState<Registro[]>([]);
@@ -55,7 +55,6 @@ function App({ onSalir }: { onSalir: () => void }) {
   const [lote, setLote] = useState(LOTES[0]);
   const [detalle, setDetalle] = useState(ACTIVIDADES[0]);
   const [sev, setSev] = useState<"baja" | "media" | "alta">("media");
-  const [resp, setResp] = useState(localStorage.getItem("responsable") ?? "usuario");
   const [gps, setGps] = useState<{ lat: number; lng: number } | null>(null);
 
   const recargar = useCallback(async () => setRegistros((await leerTodos()).sort((a, b) => b.creado.localeCompare(a.creado))), []);
@@ -83,10 +82,8 @@ function App({ onSalir }: { onSalir: () => void }) {
   );
 
   async function guardar() {
-    if (!resp.trim()) { setMsg("Escribe el nombre del responsable."); return; }
-    localStorage.setItem("responsable", resp.trim());
     const r: Registro = {
-      id: crypto.randomUUID(), tipo, lote, detalle, responsable: resp.trim(), creado: new Date().toISOString(), sync: false,
+      id: crypto.randomUUID(), tipo, lote, detalle, responsable, creado: new Date().toISOString(), sync: false,
       ...(tipo === "plaga" ? { severidad: sev, ...(gps ?? {}) } : {})
     };
     await tx("readwrite", (s) => s.put(r));
@@ -140,7 +137,7 @@ function App({ onSalir }: { onSalir: () => void }) {
               <label htmlFor="det">{tipo === "actividad" ? "Actividad" : "Tipo de plaga"}</label>
               <select id="det" value={detalle} onChange={(e) => setDetalle(e.target.value)}>{(tipo === "actividad" ? ACTIVIDADES : PLAGAS).map((x) => <option key={x}>{x}</option>)}</select>
               <label htmlFor="resp">Responsable</label>
-              <input id="resp" value={resp} onChange={(e) => setResp(e.target.value)} placeholder="Tu nombre" />
+              <output id="resp" className="field-value">{responsable}</output>
               {tipo === "plaga" && <button type="button" className="btn ghost" onClick={capturarGps}><MapPin size={18} />{gps ? `${gps.lat.toFixed(5)}, ${gps.lng.toFixed(5)}` : "Capturar ubicación GPS"}</button>}
               <button type="button" className="btn" onClick={() => void guardar()}><Check size={18} />Guardar</button>
               {msg && <p className="msg" role="status">{msg}</p>}
@@ -192,13 +189,17 @@ function App({ onSalir }: { onSalir: () => void }) {
 const USUARIO = "usuario";
 const CLAVE = "usuario123";
 
-function Login({ onEntrar }: { onEntrar: () => void }) {
+function Login({ onEntrar }: { onEntrar: (usuario: string) => void }) {
   const [u, setU] = useState("");
   const [c, setC] = useState("");
   const [error, setError] = useState(false);
   function enviar(e: React.FormEvent) {
     e.preventDefault();
-    if (u.trim() === USUARIO && c === CLAVE) { localStorage.setItem("sesion", "1"); onEntrar(); } else setError(true);
+    if (u.trim() === USUARIO && c === CLAVE) {
+      localStorage.setItem("sesion", "1");
+      localStorage.setItem("usuario", u.trim());
+      onEntrar(u.trim());
+    } else setError(true);
   }
   return (
     <div className="login">
@@ -217,8 +218,9 @@ function Login({ onEntrar }: { onEntrar: () => void }) {
 
 function Root() {
   const [dentro, setDentro] = useState(localStorage.getItem("sesion") === "1");
-  if (!dentro) return <Login onEntrar={() => setDentro(true)} />;
-  return <App onSalir={() => { localStorage.removeItem("sesion"); setDentro(false); }} />;
+  const [usuario, setUsuario] = useState(localStorage.getItem("usuario") ?? USUARIO);
+  if (!dentro) return <Login onEntrar={(nombre) => { setUsuario(nombre); setDentro(true); }} />;
+  return <App responsable={usuario} onSalir={() => { localStorage.removeItem("sesion"); localStorage.removeItem("usuario"); setDentro(false); }} />;
 }
 
 createRoot(document.getElementById("root")!).render(<StrictMode><Root /></StrictMode>);

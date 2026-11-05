@@ -20,6 +20,7 @@ h2 { font-size: 1rem; margin: 0 0 .9rem; display: flex; align-items: center; gap
 h2 svg { color: var(--primary); }
 label { display: block; font-size: .8rem; color: var(--muted); margin: .85rem 0 .3rem; }
 input, select { width: 100%; min-height: 48px; padding: 0 .8rem; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); }
+output.field-value { display: flex; align-items: center; width: 100%; min-height: 48px; padding: 0 .8rem; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); color: var(--muted); }
 input:focus, select:focus, button:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
 .seg { display: grid; grid-template-columns: 1fr 1fr; background: var(--bg); border-radius: 12px; padding: 4px; gap: 4px; }
