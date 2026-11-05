@@ -5,3 +5,7 @@ dist/
 coverage/
 .DS_Store
 server/data/
+
+# Mantener solo la documentación principal del proyecto
+*.md
+!README.md

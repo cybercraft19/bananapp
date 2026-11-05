@@ -116,7 +116,7 @@ function App({ onSalir }: { onSalir: () => void }) {
 
   const NAV = [["registrar", "Registrar", ClipboardPlus], ["mapa", "Mapa", MapIcon], ["reporte", "Reporte", FileText]] as const;
   const estado = <div className="estado"><span className={`pill ${online ? "" : "off"}`}>{online ? <Wifi size={14} /> : <WifiOff size={14} />}{online ? "En línea" : "Sin señal"}{pendientes > 0 && ` · ${pendientes} pend.`}</span><button type="button" className="salir" onClick={onSalir} aria-label="Cerrar sesión" title="Cerrar sesión"><LogOut size={18} /></button></div>;
-  const marca = <div className="brand"><Banana color="#5b8a64" /><div>BananApp<small>Finca Indira</small></div></div>;
+  const marca = <div className="brand"><Banana color="#5b8a64" /><div>BanaSync<small>Finca Indira</small></div></div>;
   const botones = (cls: string) => NAV.map(([k, n, Ic]) => <button key={k} type="button" className={tab === k ? "on" : ""} onClick={() => setTab(k)} aria-label={n}><Ic size={cls === "n" ? 22 : 18} />{n}</button>);
 
   return (
@@ -203,7 +203,7 @@ function Login({ onEntrar }: { onEntrar: () => void }) {
   return (
     <div className="login">
       <form className="card" onSubmit={enviar}>
-        <div className="brand"><Banana color="#5b8a64" /><div>BananApp<small>Finca Indira</small></div></div>
+        <div className="brand"><Banana color="#5b8a64" /><div>BanaSync<small>Finca Indira</small></div></div>
         <label htmlFor="u">Usuario</label>
         <input id="u" value={u} onChange={(e) => { setU(e.target.value); setError(false); }} autoComplete="username" autoFocus />
         <label htmlFor="c">Contraseña</label>

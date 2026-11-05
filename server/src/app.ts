@@ -38,7 +38,7 @@ const guardar = () => {
 };
 
 app.get("/api/health", (_req, res) => {
-  res.json({ status: "ok", service: "bananapp-api" });
+  res.json({ status: "ok", service: "banasync-api" });
 });
 
 // Sincronización idempotente: el UUID evita duplicados en reenvíos.
